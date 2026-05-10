@@ -1,0 +1,29 @@
+services:
+  http-checker:
+    build:
+      context: ..
+      dockerfile: section2/Dockerfile
+    image: http-checker:1.0.0-hardened
+    container_name: http-checker-hardened
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 64
+    cpus: "0.50"
+    mem_limit: 128m
+    mem_reservation: 64m
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 2048
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+    restart: "no"
