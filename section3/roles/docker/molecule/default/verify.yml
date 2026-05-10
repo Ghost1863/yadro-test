@@ -1,0 +1,37 @@
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Check docker binary is available
+      ansible.builtin.command:
+        cmd: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Assert docker reports a version
+      ansible.builtin.assert:
+        that:
+          - docker_version.rc == 0
+          - "'Docker version' in docker_version.stdout"
+
+    - name: Check docker service is active
+      ansible.builtin.systemd_service:
+        name: docker
+      register: docker_service
+      changed_when: false
+
+    - name: Assert docker service is enabled and running
+      ansible.builtin.assert:
+        that:
+          - docker_service.status.ActiveState == "active"
+          - docker_service.status.UnitFileState in ["enabled", "enabled-runtime"]
+
+    - name: Check docker group exists
+      ansible.builtin.getent:
+        database: group
+        key: docker
+
+    - name: Assert docker group is present
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.getent_group.docker is defined

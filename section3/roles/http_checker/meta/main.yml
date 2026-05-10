@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: http_checker
+  author: yadro-test
+  description: Pull and run the http-checker container, verify exit code and dump logs.
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - docker
+    - application
+dependencies:
+  - role: docker

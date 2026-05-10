@@ -1,0 +1,22 @@
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure /etc/docker exists
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Configure inner dockerd to use vfs storage driver
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "storage-driver": "vfs"
+          }
+        owner: root
+        group: root
+        mode: "0644"

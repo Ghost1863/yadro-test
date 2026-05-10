@@ -1,0 +1,8 @@
+- name: Verify target OS family is supported
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['os_family'] == "Debian"
+    fail_msg: "Role 'docker' supports Debian-family hosts only (got {{ ansible_facts['os_family'] }})."
+
+- name: Include Debian-family installation tasks
+  ansible.builtin.include_tasks: install_debian.yml

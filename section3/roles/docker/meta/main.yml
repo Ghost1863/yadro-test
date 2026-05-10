@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: docker
+  author: yadro-test
+  description: Install Docker Engine on Debian-family hosts.
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - docker
+    - container
+    - infrastructure
+dependencies: []

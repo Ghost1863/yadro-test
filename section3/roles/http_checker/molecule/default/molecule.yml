@@ -1,0 +1,36 @@
+role_name_check: 1
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../../../../requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: http-checker-jammy
+    image: geerlingguy/docker-ubuntu2204-ansible@sha256:e2d0e1fa3b688c9b728c842287dff64eb334b80ddcc048a1e9ed5aee0967cee8
+    pre_build_image: true
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    command: /lib/systemd/systemd
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/../"
+    ANSIBLE_REMOTE_TMP: /tmp/.ansible-tmp
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - verify
+    - destroy

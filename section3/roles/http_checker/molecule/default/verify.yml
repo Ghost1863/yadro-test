@@ -1,0 +1,26 @@
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect http-checker container
+      community.docker.docker_container_info:
+        name: http-checker
+      register: container_info
+
+    - name: Assert container exited with code 0
+      ansible.builtin.assert:
+        that:
+          - container_info.container is not none
+          - container_info.container.State.Status == "exited"
+          - container_info.container.State.ExitCode == 0
+
+    - name: Read container logs
+      ansible.builtin.command:
+        cmd: docker logs http-checker
+      register: container_logs
+      changed_when: false
+
+    - name: Assert logs are not empty
+      ansible.builtin.assert:
+        that:
+          - container_logs.stdout | length > 0

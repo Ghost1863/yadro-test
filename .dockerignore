@@ -27,7 +27,6 @@ logs/
 htmlcov/
 
 **/*.md
-!section1/README.md
 
 section2/Dockerfile
 section2/docker-compose*.yml

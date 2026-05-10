@@ -1,0 +1,9 @@
+- name: Provision Docker host and run http-checker
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: docker
+      tags: [docker, install]
+    - role: http_checker
+      tags: [http_checker, app]
