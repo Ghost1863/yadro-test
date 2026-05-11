@@ -18,7 +18,7 @@ logger = logging.getLogger("http_checker")
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="http_checker",
-        description="Probe https://httpstat.us with the given status codes.",
+        description="Probe an HTTP status mirror with the given status codes.",
     )
     parser.add_argument(
         "status_codes",
@@ -53,6 +53,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         except requests.RequestException as exc:
             failures += 1
             logger.error("Network error while requesting %s: %s", code, exc)
+        except ValueError as exc:
+            failures += 1
+            logger.error("Invalid status code %s: %s", code, exc)
 
     logger.info(
         "Finished: %d request(s), %d failure(s)",

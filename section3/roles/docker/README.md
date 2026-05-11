@@ -31,7 +31,7 @@ apt-репозиторий Docker, кладёт ключ в `/etc/apt/keyrings/d
 
 `docker_service_state` и `docker_service_enabled`. Желаемое состояние
 службы. Дефолты `started` и `true`. Меняются только если хост сознательно
-держит docker отключённым (редко).
+держит docker отключённым.
 
 ## Тестирование с molecule
 
@@ -41,7 +41,6 @@ molecule test
 ```
 
 Сценарий поднимает контейнер `geerlingguy/docker-ubuntu2204-ansible`
-(запинован по digest) с systemd внутри, в `prepare.yml` пишется
-`/etc/docker/daemon.json` со `"storage-driver": "vfs"` (overlay поверх
-overlay на WSL не работает), потом катается роль и проверяется наличие
+ с systemd внутри, в `prepare.yml` пишется
+`/etc/docker/daemon.json` со `"storage-driver": "vfs"` , потом катается роль и проверяется наличие
 бинаря `docker`, активной службы `docker.service` и группы `docker`.
