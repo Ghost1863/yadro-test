@@ -101,11 +101,15 @@ ansible-playbook -i inventories/production/hosts.yml site.yml
 Тестирование:
 
 ```bash
-cd section3/roles/docker или
+cd section3/roles/docker 
 ```
 или
 ```bash
-cd section3/roles/http_checker или
+cd section3/roles/http_checker 
 ```
+
+Запуск тестов:
+
+```bash
 molecule test
 ```
