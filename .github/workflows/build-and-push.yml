@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: .github/requirements/lint.txt
 
       - name: Install linters
-        run: pip install --no-cache-dir -r .github/requirements/lint.txt
+        run: pip install -r .github/requirements/lint.txt
 
       - name: Install Ansible collections
         working-directory: section3
@@ -69,13 +69,13 @@ jobs:
           cache-dependency-path: .github/requirements/security.txt
 
       - name: Install security tools
-        run: pip install --no-cache-dir -r .github/requirements/security.txt
+        run: pip install -r .github/requirements/security.txt
 
       - name: Bandit (Python SAST, high severity only)
         run: bandit -r section1/http_checker --severity-level high --confidence-level high
 
       - name: Trivy filesystem scan (critical only)
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: fs
           scan-ref: .
