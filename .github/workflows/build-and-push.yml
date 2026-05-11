@@ -14,30 +14,9 @@ env:
   TAG: "1.0.0"
 
 jobs:
-  build:
-    name: Build image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3.7.1
-
-      - name: Build (no push)
-        uses: docker/build-push-action@v6.10.0
-        with:
-          context: .
-          file: section2/Dockerfile
-          push: false
-          tags: ${{ env.IMAGE }}:${{ env.TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  push:
-    name: Push image
-    needs: build
-    runs-on: ubuntu-latest
+  build-and-push:
+    name: Build and push image
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
