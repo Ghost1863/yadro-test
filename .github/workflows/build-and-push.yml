@@ -34,6 +34,10 @@ jobs:
       - name: Install linters
         run: pip install --no-cache-dir -r .github/requirements/lint.txt
 
+      - name: Install Ansible collections
+        working-directory: section3
+        run: ansible-galaxy collection install -r requirements.yml
+
       - name: Ruff (Python)
         run: ruff check section1/
 
@@ -71,7 +75,7 @@ jobs:
         run: bandit -r section1/http_checker --severity-level high --confidence-level high
 
       - name: Trivy filesystem scan (critical only)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           scan-type: fs
           scan-ref: .
