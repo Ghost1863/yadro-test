@@ -5,6 +5,10 @@
     source: pull
     force_source: "{{ http_checker_image_pull }}"
     state: present
+  register: http_checker_pull
+  retries: 3
+  delay: 5
+  until: http_checker_pull is succeeded
 
 - name: Remove previous container if it exists
   community.docker.docker_container:

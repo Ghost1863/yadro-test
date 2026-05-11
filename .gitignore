@@ -11,3 +11,9 @@ venv/
 section3/collections/
 *.retry
 .molecule/
+
+.ruff_cache/
+.ansible-lint-cache/
+.ansible/
+.pytest_cache/
+.mypy_cache/

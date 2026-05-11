@@ -1,0 +1,12 @@
+---
+profile: production
+offline: true
+
+exclude_paths:
+  - collections/
+  - roles/*/.venv/
+  - roles/*/molecule/*/.molecule/
+
+skip_list: []
+
+warn_list: []

@@ -6,7 +6,10 @@ on:
     paths:
       - "section1/**"
       - "section2/**"
-      - ".github/workflows/build-and-push.yml"
+      - "section3/**"
+      - ".github/**"
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 env:
@@ -14,8 +17,73 @@ env:
   TAG: "1.0.0"
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: .github/requirements/lint.txt
+
+      - name: Install linters
+        run: pip install --no-cache-dir -r .github/requirements/lint.txt
+
+      - name: Ruff (Python)
+        run: ruff check section1/
+
+      - name: Yamllint
+        run: yamllint section3/ .github/
+
+      - name: Ansible-lint
+        working-directory: section3
+        run: ansible-lint --offline
+
+      - name: Hadolint (Dockerfile)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: section2/Dockerfile
+          config: .hadolint.yaml
+
+  security:
+    name: Security scan
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: .github/requirements/security.txt
+
+      - name: Install security tools
+        run: pip install --no-cache-dir -r .github/requirements/security.txt
+
+      - name: Bandit (Python SAST, high severity only)
+        run: bandit -r section1/http_checker --severity-level high --confidence-level high
+
+      - name: Trivy filesystem scan (critical only)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+          skip-dirs: section3/collections,section1/.venv
+
   build-and-push:
     name: Build and push image
+    needs: [lint, security]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout

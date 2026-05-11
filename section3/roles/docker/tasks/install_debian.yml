@@ -1,6 +1,10 @@
 - name: Refresh apt cache
   ansible.builtin.apt:
     update_cache: true
+  register: docker_apt_refresh
+  retries: 3
+  delay: 5
+  until: docker_apt_refresh is succeeded
 
 - name: Install prerequisite packages
   ansible.builtin.apt:
@@ -9,6 +13,10 @@
       - curl
       - gnupg
     state: present
+  register: docker_prereq_install
+  retries: 3
+  delay: 5
+  until: docker_prereq_install is succeeded
 
 - name: Ensure apt keyrings directory exists
   ansible.builtin.file:
@@ -26,6 +34,10 @@
     group: root
     mode: "0644"
     force: false
+  register: docker_gpg_key
+  retries: 3
+  delay: 5
+  until: docker_gpg_key is succeeded
 
 - name: Add Docker apt repository
   ansible.builtin.apt_repository:
@@ -36,11 +48,19 @@
     state: present
     filename: docker
     update_cache: true
+  register: docker_repo_add
+  retries: 3
+  delay: 5
+  until: docker_repo_add is succeeded
 
 - name: Install Docker Engine and plugins
   ansible.builtin.apt:
     name: "{{ docker_packages }}"
     state: present
+  register: docker_engine_install
+  retries: 3
+  delay: 5
+  until: docker_engine_install is succeeded
 
 - name: Install Python Docker SDK for Ansible community.docker modules
   ansible.builtin.apt:
@@ -48,6 +68,10 @@
       - python3-docker
       - python3-requests
     state: present
+  register: docker_sdk_install
+  retries: 3
+  delay: 5
+  until: docker_sdk_install is succeeded
 
 - name: Ensure docker service is started and enabled
   ansible.builtin.systemd_service:
