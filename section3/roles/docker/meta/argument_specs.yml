@@ -1,0 +1,53 @@
+argument_specs:
+  main:
+    short_description: Install Docker Engine on Debian-family hosts.
+    description:
+      - Adds the official Docker apt repository, installs Docker Engine and plugins,
+        enables docker.service, and adds the requested users to the docker group.
+    options:
+      docker_users:
+        description: Local accounts that should be added to the docker group.
+        type: list
+        elements: str
+        default: []
+      docker_packages:
+        description: Apt packages to install from the Docker repository.
+        type: list
+        elements: str
+        required: true
+      docker_apt_arch:
+        description: Architecture string used in the apt sources line.
+        type: str
+        required: true
+      docker_apt_release_channel:
+        description: Docker apt release channel.
+        type: str
+        choices: [stable, test, nightly]
+        default: stable
+      docker_apt_repository_url:
+        description: URL of the Docker apt repository.
+        type: str
+        required: true
+      docker_apt_gpg_key_url:
+        description: URL of the Docker GPG signing key.
+        type: str
+        required: true
+      docker_apt_gpg_key_checksum:
+        description: >-
+          Checksum of the GPG key, in "<algo>:<hex>" form (e.g. sha256:...).
+          Leave empty to skip checksum verification.
+        type: str
+        default: ""
+      docker_apt_keyring_path:
+        description: Filesystem path where the GPG key is installed.
+        type: str
+        required: true
+      docker_service_state:
+        description: Desired state of docker.service.
+        type: str
+        choices: [started, stopped]
+        default: started
+      docker_service_enabled:
+        description: Whether docker.service should be enabled on boot.
+        type: bool
+        default: true

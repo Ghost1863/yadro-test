@@ -9,11 +9,7 @@
   retries: 3
   delay: 5
   until: http_checker_pull is succeeded
-
-- name: Remove previous container if it exists
-  community.docker.docker_container:
-    name: "{{ http_checker_container_name }}"
-    state: absent
+  tags: [image, pull]
 
 - name: Run http-checker container
   community.docker.docker_container:
@@ -23,7 +19,9 @@
     detach: true
     auto_remove: false
     state: started
+    recreate: true
     pull: false
+  tags: [run]
 
 - name: Wait until container has exited
   community.docker.docker_container_info:
@@ -32,18 +30,24 @@
   until:
     - http_checker_info.container is not none
     - http_checker_info.container.State.Status == "exited"
-  retries: "{{ http_checker_wait_retries }}"
-  delay: "{{ http_checker_wait_delay }}"
+  retries: "{{ http_checker_wait_retries | int }}"
+  delay: "{{ http_checker_wait_delay | int }}"
+  tags: [run, verify]
 
 - name: Fetch container logs (docker logs)
   ansible.builtin.command:
-    cmd: "docker logs {{ http_checker_container_name }}"
+    argv:
+      - docker
+      - logs
+      - "{{ http_checker_container_name }}"
   register: http_checker_logs
   changed_when: false
+  tags: [logs, verify]
 
 - name: Show container logs
   ansible.builtin.debug:
     var: http_checker_logs.stdout_lines
+  tags: [logs, verify]
 
 - name: Assert container exited with code 0
   ansible.builtin.assert:
@@ -51,9 +55,11 @@
       - http_checker_info.container.State.ExitCode == 0
     success_msg: "Container exited cleanly (code 0)."
     fail_msg: "Container exited with code {{ http_checker_info.container.State.ExitCode }}."
+  tags: [verify]
 
 - name: Remove container after run
   community.docker.docker_container:
     name: "{{ http_checker_container_name }}"
     state: absent
   when: http_checker_remove_after_run | bool
+  tags: [cleanup]

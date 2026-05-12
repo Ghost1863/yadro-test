@@ -31,7 +31,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PATH=/opt/venv/bin:${PATH}
 
 RUN apt-get update \
-    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
         python3 \
         ca-certificates \

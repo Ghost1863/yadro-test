@@ -1,0 +1,40 @@
+argument_specs:
+  main:
+    short_description: Run the http-checker container and validate its exit code.
+    description:
+      - Pulls the http-checker image, runs it with the given status codes,
+        waits for it to exit, dumps logs via docker logs, and asserts exit code 0.
+    options:
+      http_checker_image_repository:
+        description: Image repository name.
+        type: str
+        required: true
+      http_checker_image_tag:
+        description: Image tag.
+        type: str
+        required: true
+      http_checker_image_pull:
+        description: Force re-pull of the image on every run.
+        type: bool
+        default: true
+      http_checker_container_name:
+        description: Name of the container created by the role.
+        type: str
+        required: true
+      http_checker_status_codes:
+        description: HTTP status codes the script will probe.
+        type: list
+        elements: int
+        default: [100, 200, 301, 404, 500]
+      http_checker_wait_retries:
+        description: Number of polls for the container to reach the "exited" state.
+        type: int
+        default: 30
+      http_checker_wait_delay:
+        description: Delay between polls, in seconds.
+        type: int
+        default: 2
+      http_checker_remove_after_run:
+        description: Remove the container after the run completes.
+        type: bool
+        default: false

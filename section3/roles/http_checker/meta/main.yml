@@ -12,5 +12,4 @@ galaxy_info:
   galaxy_tags:
     - docker
     - application
-dependencies:
-  - role: docker
+dependencies: []

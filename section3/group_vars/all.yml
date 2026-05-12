@@ -1,5 +1,4 @@
-docker_users:
-  - "{{ ansible_user | default(lookup('env', 'USER')) }}"
+docker_users: []
 
 http_checker_image_repository: imm174/http-checker
 http_checker_image_tag: "1.0.0"
