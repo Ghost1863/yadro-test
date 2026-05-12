@@ -6,4 +6,5 @@
     http_checker_image_tag: "1.0.0"
     http_checker_status_codes: [200]
   roles:
+    - role: docker
     - role: http_checker
